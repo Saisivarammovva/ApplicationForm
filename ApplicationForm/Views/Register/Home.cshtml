@@ -1,0 +1,265 @@
+﻿@model ApplicationForm.Models.Data
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Home</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-3.6.0.slim.min.js"></script>
+    <script>
+    $(function () {
+        $("#refreshCaptcha").click(function () {
+            $("#captchaImage").attr("src", "@Url.Action("CaptchaImage", "Register")?" + new Date().getTime());
+            $("#captcha").val("");
+            return false;
+        });
+
+    });
+        function Submitdata() {
+           
+            if ($("#StaffId").val() == "") {
+                alert("please enter the StaffId");
+                $("#StaffId").focus();
+                return false;
+            }
+        var captchaText = $("#captcha").val();
+        if (captchaText == "") {
+            alert("please enter the capcha");
+            $("#captcha").focus();
+            return false;
+        }
+        var expectedText = "@Session["CaptchaText"]";
+        if (captchaText !== expectedText) {
+            alert("Incorrect captcha text. Please try again.");
+            $("#captchaImage").attr("src", "@Url.Action("CaptchaImage", "Register")?" + new Date().getTime());
+            $("#captcha").val("");
+            return false;
+        }
+
+        $(document).ready(function () {
+            $('.required').blur(function () {
+                if ($(this).val() == '') {
+                    alert('Please fill in this mandatory field');
+                    $(this).focus();
+                }
+            });
+        });
+        
+
+    }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#UserType').change(function () {
+                var UserType = $(this).val();
+                if (UserType == 'Staff')
+                {
+                    // Show Staff fields
+                    $('#StaffFields').show();
+                    $('#StudentFields').hide();
+                    $('#Non-TeachingFields').hide();
+                    $('#Fields').hide();
+                } else if (UserType == 'Student') {
+                    // Show Student fields
+                    $('#StaffFields').hide();
+                    $('#Fields').hide();
+                    $('#StudentFields').show();
+                    $('#Non-TeachingFields').hide();
+                }
+                else if (UserType == 'Non-Teaching') {
+                    // Show Non-Teaching fields
+                    $('#StaffFields').hide();
+                    $('#Fields').hide();
+                    $('#StudentFields').hide();
+                    $('#Non-TeachingFields').show();
+                }
+                else {
+                    // Hide both fields
+                    $('#StaffFields').hide();
+                    $('#Fields').show();
+                    $('#StudentFields').hide();
+                    $('#Non-TeachingFields').hide();
+                }
+
+            });
+        });</script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+    <div class="container">
+        <form method="post" onsubmit="return Submitdata();">
+            <div class="form-group">
+                <label for="UserType">Select Type:</label>
+                <select id="UserType" name="UserType" class="form-control" onchange="ready()">
+                    <option value="">Select Type</option>
+                    @foreach (var item in ViewBag.UserTypeList)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <br />
+                <div id="Fields">
+                    <label for="Id">Enter  Id:</label>
+                    <input id="Id" name="Id" type="text" class="form-control" placeholder="Please enter  Id" />
+                    <br />
+                    <label for="Name">Enter Name:</label>
+                    <input id="Name" name="Name" type="text" class="form-control" placeholder="Please enter Name" />
+                    <br />
+                    <label for="Email">Enter Email:</label>
+                    <input id="Email" name="Email" type="email" class="form-control" placeholder="Please enter Email-Id" />
+                    <br />
+                    <label for="DateOfBirth">Select  Date of Birth:</label>
+                    <input id="DateOfBirth" name="DateOfBirth" type="date" class="form-control" />
+                    <br />
+                    <label for="File">Select  file:</label>
+                    <input id="File" name="File" type="file" class="form-control" />
+                    <br />
+                </div>
+
+                <div id="StaffFields" style="display:none">
+                    <label for="StaffId">Enter Staff Id:</label>
+                    <input id="StaffId" name="StaffId" type="text" class="form-control" placeholder="Please enter Staff Id" />
+                    <br />
+                    <label for="StaffName">Enter StaffName:</label>
+                    <input id="StaffName" name="StaffName" type="text" class="form-control" placeholder="Please enter Staff Name" />
+                    <br />
+                    <label for="StaffEmail">Enter StaffEmail:</label>
+                    <input id="StaffEmail" name="StaffEmail" type="email" class="form-control" placeholder="Please enter Staff Email-Id" />
+                    <br />
+                    <label for="StaffDateOfBirth">Select Staff's Date of Birth:</label>
+                    <input id="StaffDateOfBirth" name="StaffDateOfBirth" type="date" class="form-control" />
+                    <br />
+                    <label for="StaffFile">Select Staff file:</label>
+                    <input id="StaffFile" name="StaffFile" type="file" class="form-control" />
+                    <br />
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div id="StudentFields" style="display:none">
+                    <label for="StudentId">Enter Student Id:</label>
+                    <input id="StudentId" name="StudentId" type="text" class="form-control" placeholder="Please enter Student Id" />
+                    <br />
+                    <label for="StudentName">Enter Student Name:</label>
+                    <input id="StudentName" name="StudentName" type="text" class="form-control" placeholder="Please enter Student Name" />
+                    <br />
+                    <label for="StudentEmail">Enter Student Email:</label>
+                    <input id="StudentEmail" name="StudentEmail" type="email" class="form-control" placeholder="Please enter Student Email-Id" />
+                    <br />
+                    <label for="StudentDateOfBirth">Select Student's Date of Birth:</label>
+                    <input id="StudentDateOfBirth" name="StudentDateOfBirth" type="date" class="form-control" />
+                    <br />
+                    <label for="StudentFile">Select Student file:</label>
+                    <input id="StudentFile" name="StudentFile" type="file" class="form-control" />
+                    <br />
+
+
+                </div>
+            </div>
+            <div id="Non-TeachingFields" style="display:none">
+                <label for="Non-TeachingId">Enter Non-Teaching Staff Id:</label>
+                <input id="Non-TeachingId" name="Non-TeachingId" type="text" class="form-control" placeholder="Please enter Non-Teaching Staff Id" />
+                <br />
+                <label for="Non-TeachingName">Enter Non-Teaching StaffName:</label>
+                <input id="Non-TeachingName" name="Non-TeachingName" type="text" class="form-control" placeholder="Please enter Non-Teaching Staff Name" />
+                <br />
+                <label for="Non-TeachingEmail">Enter Non-Teaching StaffEmail:</label>
+                <input id="Non-TeachingEmail" name="Non-TeachingEmail" type="email" class="form-control" placeholder="Please enter Non-Teaching Staff Email-Id" />
+                <br />
+                <label for="Non-TeachingDateOfBirth">Select Non-Teaching Staff's Date of Birth:</label>
+                <input id="Non-TeachingDateOfBirth" name="Non-TeachingDateOfBirth" type="date" class="form-control" />
+                <br />
+                <label for="Non-TeachingFile">Select Non-Teaching Staff file:</label>
+                <input id="Non-TeachingFile" name="Non-TeachingFile" type="file" class="form-control" />
+                <br />
+
+            </div>
+            @if (ViewBag.CountryList != null)
+            {
+                <label for="country">Please Select Country:</label>
+                @Html.DropDownListFor(m => m.cid, ViewBag.CountryList as SelectList, "--select county Name--", new { @class = "form-control" })}
+            <label for="State">Please Select State:</label>
+            @Html.DropDownListFor(m => m.sid, new SelectList(" "), "--select state Name--", new { @class = "form-control" })
+            <label for="City">Please Select City:</label>
+            @Html.DropDownListFor(m => m.cityid, new SelectList(" "), "--select City Name--", new { @class = "form-control" })
+            <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+
+            <script>
+                $(document).ready(function () {
+                    $("#cid").change(function () {
+                        var countryId = $(this).val();
+                        debugger
+                        $.ajax({
+                            type: "post",
+                            url: "/Register/GetStates?cid=" + countryId,
+                            contentType: "html",
+                            success: function (response) {
+                                debugger
+                                $("#sid").empty();
+                                $("#cityid").empty();
+                                $("#sid").append(response);
+                            }
+                        })
+                    })
+
+                    $("#sid").change(function () {
+                        var StateId = $(this).val();
+                        debugger
+                        $.ajax({
+                            type: "post",
+                            url: "/Register/GetCities?sid=" + StateId,
+                            contentType: "html",
+                            success: function (response) {
+                                debugger
+                                $("#cityid").empty();
+                                $("#cityid").append(response);
+                            }
+                        })
+                    })
+                })
+
+            </script>
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-lg-3">
+                    <div class="form-group">
+                        <label class="control-label" for="captcha">Enter Captcha:<span style="color:red">*</span></label>
+                        <input type="text" id="captcha" name="captcha" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-3">
+                    <div class="form-group">
+                        <br />
+                        <img src="/Register/CaptchaImage" id="captchaImage" />
+                        <a href="#" id="refreshCaptcha">
+
+                            <img src="~/Images/refresh-icon-19.png" style="height:30px" />
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+            <button type="submit" value="submit" id="submit" class="btn btn-outline-info">SUBMIT</button>
+        </form>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+    </script>
+
+</body>
+</html>
